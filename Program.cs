@@ -16,6 +16,25 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
 
 var app = builder.Build();
 
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+    // Sigurohu që databaza ekziston
+    context.Database.EnsureCreated();
+
+    // Shto kategori vetëm nëse nuk ekzistojnë
+    if (!context.Categories.Any())
+    {
+        context.Categories.AddRange(
+            new Category { Name = "Elektronikë" },
+            new Category { Name = "Auto Pjesë" },
+            new Category { Name = "Shtëpi" }
+        );
+
+        context.SaveChanges();
+    }
+}
 // Middleware
 if (!app.Environment.IsDevelopment())
 {
