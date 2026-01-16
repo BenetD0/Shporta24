@@ -1,0 +1,32 @@
+﻿@{
+    ViewData["Title"] = "Krijo User";
+}
+
+<h2>Krijo User</h2>
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- KJO ESHTE PJESA KRITIKE -->
+    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Email</label>
+        <input name="email" class="form-control" required />
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Password</label>
+        <input name="password" type="password" class="form-control" required />
+        <small class="text-muted">
+            Password duhet të ketë: shkronjë të madhe, numër dhe simbol
+        </small>
+    </div>
+
+    <div class="form-check mb-3">
+        <input type="checkbox" name="isAdmin" class="form-check-input" />
+        <label class="form-check-label">Admin</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>

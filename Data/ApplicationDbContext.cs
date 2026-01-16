@@ -16,5 +16,9 @@ namespace Shporta24.Data
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<AuditLog> AuditLogs { get; set; }
+
+
+
     }
 }

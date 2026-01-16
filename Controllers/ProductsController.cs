@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,150 +16,155 @@ namespace Shporta24.Controllers
             _context = context;
         }
 
-        // GET: Products
+        // ================= INDEX (PUBLIC) =================
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Products.Include(p => p.Category);
-            return View(await applicationDbContext.ToListAsync());
+            var products = _context.Products.Include(p => p.Category);
+            return View(await products.ToListAsync());
         }
 
-        // GET: Products/Details/5
+        // ================= DETAILS (PUBLIC) =================
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var product = await _context.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+
+            if (product == null) return NotFound();
 
             return View(product);
         }
 
-        // GET: Products/Create
+        // ================= CREATE (ADMIN) =================
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
-            ViewBag.CategoryId = new SelectList(_context.Categories.ToList(), "Id", "Name");
-
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name");
             return View();
         }
 
-        // POST
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Product product)
         {
-
             if (!ModelState.IsValid)
             {
-                ViewBag.CategoryId =
-                    new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
-
+                ViewBag.CategoryId = new SelectList(
+                    _context.Categories, "Id", "Name", product.CategoryId);
                 return View(product);
             }
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
+            // ===== AUDIT LOG =====
+            _context.AuditLogs.Add(new AuditLog
+            {
+                Action = $"Created product: {product.Name}",
+                PerformedBy = User.Identity?.Name ?? "System",
+                CreatedAt = DateTime.Now
+            });
+
+            await _context.SaveChangesAsync();
+
             return RedirectToAction(nameof(Index));
         }
 
-        // GET: Products/Edit/5
+        // ================= EDIT (ADMIN) =================
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                return NotFound();
-            }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
+            if (product == null) return NotFound();
+
+            ViewBag.CategoryId = new SelectList(
+                _context.Categories, "Id", "Name", product.CategoryId);
+
             return View(product);
         }
 
-        // POST: Products/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Price,CategoryId")] Product product)
+        public async Task<IActionResult> Edit(int id, Product product)
         {
-            if (id != product.Id)
+            if (id != product.Id) return NotFound();
+
+            if (!ModelState.IsValid)
             {
-                return NotFound();
+                ViewBag.CategoryId = new SelectList(
+                    _context.Categories, "Id", "Name", product.CategoryId);
+                return View(product);
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
+                _context.Update(product);
+                await _context.SaveChangesAsync();
+
+                // ===== AUDIT LOG =====
+                _context.AuditLogs.Add(new AuditLog
                 {
-                    _context.Update(product);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ProductExists(product.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                    Action = $"Edited product: {product.Name}",
+                    PerformedBy = User.Identity?.Name ?? "System",
+                    CreatedAt = DateTime.Now
+                });
+
+                await _context.SaveChangesAsync();
             }
-            ViewData["CategoryId"] = new SelectList(_context.Categories, "Id", "Id", product.CategoryId);
-            return View(product);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!_context.Products.Any(e => e.Id == product.Id))
+                    return NotFound();
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
-        // GET: Products/Delete/5
+        // ================= DELETE (ADMIN) =================
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var product = await _context.Products
                 .Include(p => p.Category)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (product == null)
-            {
-                return NotFound();
-            }
+
+            if (product == null) return NotFound();
 
             return View(product);
         }
 
-        // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);
+
             if (product != null)
             {
                 _context.Products.Remove(product);
+
+                // ===== AUDIT LOG =====
+                _context.AuditLogs.Add(new AuditLog
+                {
+                    Action = $"Deleted product: {product.Name}",
+                    PerformedBy = User.Identity?.Name ?? "System",
+                    CreatedAt = DateTime.Now
+                });
+
+                await _context.SaveChangesAsync();
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ProductExists(int id)
-        {
-            return _context.Products.Any(e => e.Id == id);
         }
     }
 }
