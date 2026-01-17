@@ -1,32 +1,38 @@
-﻿@{
-    ViewData["Title"] = "Krijo User";
+﻿@using Microsoft.AspNetCore.Identity
+@model IEnumerable<IdentityUser>
+@inject UserManager<IdentityUser> UserManager
+
+@{
+    ViewData["Title"] = "Lista e Userave";
 }
 
-<h2>Krijo User</h2>
+<h2>Lista e Userave</h2>
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+<p>
+    <a class="btn btn-primary" asp-action="Create">Create New User</a>
+</p>
 
-    <!-- KJO ESHTE PJESA KRITIKE -->
-    <div asp-validation-summary="All" class="text-danger mb-3"></div>
-
-    <div class="mb-3">
-        <label class="form-label">Email</label>
-        <input name="email" class="form-control" required />
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Password</label>
-        <input name="password" type="password" class="form-control" required />
-        <small class="text-muted">
-            Password duhet të ketë: shkronjë të madhe, numër dhe simbol
-        </small>
-    </div>
-
-    <div class="form-check mb-3">
-        <input type="checkbox" name="isAdmin" class="form-check-input" />
-        <label class="form-check-label">Admin</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Create</button>
-</form>
+<table class="table table-striped">
+    <thead class="table-dark">
+        <tr>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            var isAdmin = (await UserManager.GetRolesAsync(user)).Contains("Admin");
+            <tr>
+                <td>@user.Email</td>
+                <td>@(isAdmin ? "Admin" : "User")</td>
+                <td>
+                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@user.Id">Edit</a>
+                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@user.Id">Delete</a>
+                    <a class="btn btn-secondary btn-sm" asp-action="ResetPassword" asp-route-id="@user.Id">Reset Password</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

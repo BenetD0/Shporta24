@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Shporta24.Data;
 using Shporta24.Models;
+using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace Shporta24.Controllers
 {
@@ -16,11 +18,14 @@ namespace Shporta24.Controllers
             _context = context;
         }
 
-        // ================= INDEX (PUBLIC) =================
+        // ================= INDEX (PUBLIC & ADMIN) =================
         public async Task<IActionResult> Index()
         {
-            var products = _context.Products.Include(p => p.Category);
-            return View(await products.ToListAsync());
+            var products = await _context.Products
+                .Include(p => p.Category)
+                .ToListAsync();
+
+            return View(products);
         }
 
         // ================= DETAILS (PUBLIC) =================
@@ -48,19 +53,35 @@ namespace Shporta24.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Product product)
+        public async Task<IActionResult> Create(Product product, IFormFile ImageFile)
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.CategoryId = new SelectList(
-                    _context.Categories, "Id", "Name", product.CategoryId);
+                ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
                 return View(product);
+            }
+
+            // UPLOAD FOTO
+            if (ImageFile != null && ImageFile.Length > 0)
+            {
+                var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/products");
+                Directory.CreateDirectory(uploadsFolder);
+
+                var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+                var filePath = Path.Combine(uploadsFolder, fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ImageFile.CopyToAsync(stream);
+                }
+
+                product.ImageUrl = "/images/products/" + fileName;
             }
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
 
-            // ===== AUDIT LOG =====
+            // Audit
             _context.AuditLogs.Add(new AuditLog
             {
                 Action = $"Created product: {product.Name}",
@@ -82,32 +103,54 @@ namespace Shporta24.Controllers
             var product = await _context.Products.FindAsync(id);
             if (product == null) return NotFound();
 
-            ViewBag.CategoryId = new SelectList(
-                _context.Categories, "Id", "Name", product.CategoryId);
-
+            ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
             return View(product);
         }
 
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Product product)
+        public async Task<IActionResult> Edit(int id, Product product, IFormFile ImageFile)
         {
             if (id != product.Id) return NotFound();
 
             if (!ModelState.IsValid)
             {
-                ViewBag.CategoryId = new SelectList(
-                    _context.Categories, "Id", "Name", product.CategoryId);
+                ViewBag.CategoryId = new SelectList(_context.Categories, "Id", "Name", product.CategoryId);
                 return View(product);
             }
 
             try
             {
-                _context.Update(product);
+                var existingProduct = await _context.Products.FindAsync(id);
+                if (existingProduct == null) return NotFound();
+
+                // UPDATE FIELDS
+                existingProduct.Name = product.Name;
+                existingProduct.Price = product.Price;
+                existingProduct.CategoryId = product.CategoryId;
+
+                // Nese ka ngarkim te ri foto
+                if (ImageFile != null && ImageFile.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images/products");
+                    Directory.CreateDirectory(uploadsFolder);
+
+                    var fileName = Guid.NewGuid() + Path.GetExtension(ImageFile.FileName);
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await ImageFile.CopyToAsync(stream);
+                    }
+
+                    existingProduct.ImageUrl = "/images/products/" + fileName;
+                }
+                // nese nuk ka ngarkim te ri, ruaj foto ekzistuese
+
                 await _context.SaveChangesAsync();
 
-                // ===== AUDIT LOG =====
+                // Audit
                 _context.AuditLogs.Add(new AuditLog
                 {
                     Action = $"Edited product: {product.Name}",
@@ -153,7 +196,6 @@ namespace Shporta24.Controllers
             {
                 _context.Products.Remove(product);
 
-                // ===== AUDIT LOG =====
                 _context.AuditLogs.Add(new AuditLog
                 {
                     Action = $"Deleted product: {product.Name}",

@@ -6,58 +6,112 @@
     <title>@ViewData["Title"] - Shporta24</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Shporta24.styles.css" asp-append-version="true" />
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-controller="Home" asp-action="Index">Shporta24</a>
+    <!-- ===================== NAVBAR ===================== -->
+    <!-- ===================== NAVBAR ===================== -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" asp-controller="Home" asp-action="Index">Shporta24</a>
 
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                        data-bs-target=".navbar-collapse">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+        <div class="collapse navbar-collapse justify-content-center" id="navbarContent">
+
+            <!-- ===================== SEARCH BOX MODERN ===================== -->
+                <form class="d-flex w-50" asp-controller="Home" asp-action="Index" method="get">
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="search" placeholder="Kërko produkte..." aria-label="Search"
+                               value="@(ViewBag.SearchText ?? "")" />
+
+                        <select class="form-select" name="categoryId" style="max-width: 150px;">
+                            <option value="">Të gjitha</option>
+                            @if (ViewBag.Categories != null)
+                            {
+                                foreach (var cat in ViewBag.Categories)
+                                {
+                                    if (ViewBag.SelectedCategoryId != null && ViewBag.SelectedCategoryId == cat.Id)
+                                    {
+                                        <option value="@cat.Id" selected>@cat.Name</option>
+                                    }
+                                    else
+                                    {
+                                        <option value="@cat.Id">@cat.Name</option>
+                                    }
+                                }
+                            }
+                        </select>
+
+                        <button class="btn btn-outline-secondary" type="submit">
+                            🔍
+                        </button>
+                    </div>
+                </form>
+
+            <!-- ===================== LOGIN / LOGOUT & ADMIN ===================== -->
+            <ul class="navbar-nav ms-auto">
+                @if (User.Identity.IsAuthenticated)
+                {
+                    @if (User.IsInRole("Admin"))
+                    {
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link text-danger fw-bold" asp-controller="Dashboard" asp-action="Index">Admin Dashboard</a>
                         </li>
+                    }
+                    <li class="nav-item">
+                        <form method="post" asp-controller="Account" asp-action="Logout" class="d-inline">
+                            <button type="submit" class="btn btn-link nav-link">Logout (@User.Identity.Name)</button>
+                        </form>
+                    </li>
+                }
+                else
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Products" asp-action="Index">Products</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Home" asp-action="Privacy">Contact</a>
-                        </li>
-
-                        @if (User.IsInRole("Admin"))
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- LEFT SIDEBAR / CATEGORIES -->
+            <div class="col-md-2 bg-light p-3">
+                <h5>Kategoritë</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewBag.SelectedCategoryId == null ? "fw-bold" : "")"
+                           asp-controller="Home" asp-action="Index">Të gjitha produktet</a>
+                    </li>
+                    @if (ViewBag.Categories != null)
+                    {
+                        foreach (var cat in ViewBag.Categories)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-danger fw-bold"
-                                   asp-controller="Dashboard"
-                                   asp-action="Index">
-                                    Admin Dashboard
-                                </a>
+                                <a class="nav-link @(ViewBag.SelectedCategoryId == cat.Id ? "fw-bold" : "")"
+                                   asp-controller="Home"
+                                   asp-action="Index"
+                                   asp-route-categoryId="@cat.Id">@cat.Name</a>
                             </li>
                         }
-                    </ul>
-
-                    <partial name="_LoginPartial" />
-                </div>
+                    }
+                </ul>
             </div>
-        </nav>
-    </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+            <!-- MAIN VIEW -->
+            <main role="main" class="col-md-10 px-4">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="border-top footer text-muted mt-3">
         <div class="container">
             &copy; 2025 - Shporta24
         </div>

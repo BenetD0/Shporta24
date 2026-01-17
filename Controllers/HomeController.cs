@@ -1,26 +1,46 @@
-using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Shporta24.Data;
 using Shporta24.Models;
+using System.Diagnostics;
 
 namespace Shporta24.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ApplicationDbContext context)
         {
-            _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        // ================= Index (Home Page) =================
+        // Parametra opcional: categoryId + search
+        public async Task<IActionResult> Index(int? categoryId, string search)
         {
-            return View();
+            var productsQuery = _context.Products
+                .Include(p => p.Category)
+                .AsQueryable();
+
+            // Filter per kategori
+            if (categoryId.HasValue)
+                productsQuery = productsQuery.Where(p => p.CategoryId == categoryId.Value);
+
+            // Filter per emrin e produktit (search)
+            if (!string.IsNullOrWhiteSpace(search))
+                productsQuery = productsQuery.Where(p => p.Name.Contains(search));
+
+            // Merr te gjitha kategorite per sidebar
+            var categories = await _context.Categories.ToListAsync();
+            ViewBag.Categories = categories;
+            ViewBag.SelectedCategoryId = categoryId;
+            ViewBag.SearchText = search;
+
+            var products = await productsQuery.ToListAsync();
+            return View(products);
         }
-        public IActionResult Products()
-        {
-            return View();
-        }
+
         public IActionResult Privacy()
         {
             return View();

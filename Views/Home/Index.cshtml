@@ -1,7 +1,24 @@
-﻿@{
-    ViewData["Title"] = "Home";
+﻿@model IEnumerable<Shporta24.Models.Product>
 
+@{
+    ViewData["Title"] = "Home";
 }
 
-<h1>Welcome to Shporta24!</h1>
-
+<div class="row">
+    @foreach (var product in Model)
+    {
+        <div class="col-md-3 mb-4">
+            <div class="card h-100 shadow-sm">
+                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    <img class="card-img-top" src="@product.ImageUrl" alt="@product.Name" style="height:200px; object-fit:cover;" />
+                }
+                <div class="card-body">
+                    <h5 class="card-title">@product.Name</h5>
+                    <p class="card-text">@product.Price.ToString("0.00") €</p>
+                    <p class="card-text"><small class="text-muted">@product.Category?.Name ?? "No Category"</small></p>
+                </div>
+            </div>
+        </div>
+    }
+</div>
