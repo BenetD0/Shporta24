@@ -4,7 +4,21 @@
     ViewData["Title"] = "Home";
 }
 
-<div class="row">
+<!-- ===================== HERO SECTION ME BACKGROUND FOTO ===================== -->
+@section HeroSection {
+    <section class="hero-section">
+        <div class="hero-content">
+            <h1>Shporta24 - Blerje Online të Sigurta</h1>
+            <p class="lead">Zbritje të mëdha në të gjitha kategoritë</p>
+            <a href="#produktet" class="hero-btn">
+                <i class="bi bi-arrow-down-circle me-2"></i> Shiko Produktet
+            </a>
+        </div>
+    </section>
+}
+
+<!-- ===================== PRODUKTET ===================== -->
+<div class="row" id="produktet">
     @foreach (var product in Model)
     {
         <div class="col-md-3 mb-4">
@@ -16,7 +30,7 @@
                 <div class="card-body">
                     <h5 class="card-title">@product.Name</h5>
                     <p class="card-text">@product.Price.ToString("0.00") €</p>
-                   
+
                 </div>
             </div>
         </div>
