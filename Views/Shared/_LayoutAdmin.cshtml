@@ -1,0 +1,98 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Shporta24 Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, sans-serif;
+            background-color: #f4f6f8;
+        }
+
+        /* Admin Navbar */
+        .navbar-admin {
+            background-color: #1f2937;
+            color: white;
+        }
+
+            .navbar-admin .navbar-brand {
+                color: #f9fafb;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .navbar-admin .nav-link {
+                color: #e5e7eb;
+                font-weight: 500;
+                transition: color 0.2s;
+            }
+
+                .navbar-admin .nav-link:hover {
+                    color: #3b82f6;
+                }
+
+        /* Admin Container */
+        .admin-container {
+            padding: 30px;
+        }
+
+        /* Admin Page Header */
+        .admin-header {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <!-- ===================== NAVBAR ===================== -->
+    <nav class="navbar navbar-expand-lg navbar-admin shadow-sm mb-4">
+        <div class="container-fluid">
+            <!-- Logo gjithmonë çon te dashboard -->
+            <a class="navbar-brand" asp-controller="Dashboard" asp-action="Index">Shporta24</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAdminContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse justify-content-end" id="navbarAdminContent">
+                <ul class="navbar-nav">
+                    <li class="nav-item me-2">
+                        <a class="btn btn-outline-light" href="https://localhost:44363/" >
+                            Go to Main Site
+                        </a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item">
+                            <form method="post" asp-area="Identity"
+                                  asp-page="/Account/Logout"
+                                  asp-route-returnUrl="/Dashboard/Index"
+                                  class="d-inline">
+                                <button type="submit" class="btn btn-link nav-link">
+                                    Logout (@User.Identity.Name)
+                                </button>
+                            </form>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ===================== MAIN CONTENT ===================== -->
+    <div class="container-fluid admin-container">
+        @RenderBody()
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
