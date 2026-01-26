@@ -1,0 +1,11 @@
+@model Shporta24.Models.Category
+
+<h2>Fshi Kategori</h2>
+
+<p>A je i sigurt që dëshiron ta fshish kategorinë <b>@Model.Name</b>?</p>
+
+<form method="post">
+    <input type="hidden" name="Id" value="@Model.Id" />
+    <button type="submit" class="btn btn-danger" style="padding:8px 16px; border-radius:4px;">Delete</button>
+    <a asp-action="Index" class="btn btn-secondary" style="padding:8px 16px; border-radius:4px;">Cancel</a>
+</form>

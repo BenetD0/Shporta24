@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <Folder Include="Areas\Identity\Pages\Account\" />
+    <Folder Include="Views\NewFolder\" />
     <Folder Include="wwwroot\images\products\" />
   </ItemGroup>
 
