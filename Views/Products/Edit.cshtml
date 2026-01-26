@@ -4,54 +4,67 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1 style="text-align:center; color:#333; font-family:Arial, sans-serif;">Edit Product</h1>
 
-<h4>Product</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
+<hr style="border:1px solid #ccc; margin-bottom:20px;" />
+
+<div style="display:flex; justify-content:center; align-items:flex-start;">
+    <div style="width:400px; padding:20px; border:1px solid #ddd; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); background-color:#f9f9f9;">
         <form asp-action="Edit" method="post" enctype="multipart/form-data">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="ModelOnly" class="text-danger" style="color:red; margin-bottom:10px;"></div>
             <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" />
-                <span asp-validation-for="Price" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
-                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId"></select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
-            <div class="form-group mt-2">
-                <label class="control-label">Change Image</label>
-                <input type="file" name="ImageFile" class="form-control" accept="image/*" />
+
+            <!-- Name -->
+            <div class="form-group" style="margin-bottom:15px;">
+                <label asp-for="Name" class="control-label" style="font-weight:bold;"></label>
+                <input asp-for="Name" class="form-control" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" />
+                <span asp-validation-for="Name" class="text-danger" style="color:red;"></span>
             </div>
 
+            <!-- Price -->
+            <div class="form-group" style="margin-bottom:15px;">
+                <label asp-for="Price" class="control-label" style="font-weight:bold;"></label>
+                <input asp-for="Price" class="form-control" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;" />
+                <span asp-validation-for="Price" class="text-danger" style="color:red;"></span>
+            </div>
+
+            <!-- Category Dropdown -->
+            <div class="form-group" style="margin-bottom:15px;">
+                <label asp-for="CategoryId" class="control-label" style="font-weight:bold;"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.CategoryId" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                    <option value="">-- Zgjedh kategorinë --</option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger" style="color:red;"></span>
+            </div>
+
+            <!-- Image Upload -->
+            <div class="form-group mt-2" style="margin-bottom:15px;">
+                <label class="control-label" style="font-weight:bold;">Change Image</label>
+                <input type="file" name="ImageFile" class="form-control" accept="image/*" style="width:100%; padding:6px; border:1px solid #ccc; border-radius:4px;" />
+            </div>
+
+            <!-- Current Image -->
             @if (!string.IsNullOrEmpty(Model.ImageUrl))
             {
-                <div class="mt-2">
-                    <img src="@Model.ImageUrl"
-                         style="max-height:120px;border-radius:6px" />
+                <div class="mt-2" style="margin-bottom:15px; text-align:center;">
+                    <img src="@Model.ImageUrl" style="max-height:120px; border-radius:6px; box-shadow:0 1px 5px rgba(0,0,0,0.1);" />
                 </div>
             }
 
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <!-- Submit -->
+            <div class="form-group mt-3" style="margin-top:20px;">
+                <input type="submit" value="Save" class="btn btn-primary" style="width:100%; padding:10px; background-color:#007bff; border:none; color:white; border-radius:4px; cursor:pointer;" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
+<div class="mt-3" style="text-align:center; margin-top:20px;">
+    <a asp-action="Index" class="btn btn-secondary" style="padding:8px 16px; background-color:#6c757d; color:white; text-decoration:none; border-radius:4px;">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

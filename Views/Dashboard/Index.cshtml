@@ -40,25 +40,28 @@
 
 <!-- Butonat në një rresht -->
 <div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
+
     <a asp-controller="Products" asp-action="Index"
-       class="btn btn-outline-primary"
-       style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px;">
+       style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px; text-align:center; background-color:#007bff; color:white; text-decoration:none; box-shadow:0 3px 6px rgba(0,0,0,0.1); transition: all 0.3s ease;"
+       onmouseover="this.style.backgroundColor='#0056b3'; this.style.transform='translateY(-2px)';"
+       onmouseout="this.style.backgroundColor='#007bff'; this.style.transform='translateY(0)';">
         Menaxho Produkte
     </a>
 
     <a asp-controller="AdminUsers" asp-action="Index"
-       class="btn btn-outline-dark"
-       style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px;">
+       style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px; text-align:center; background-color:#343a40; color:white; text-decoration:none; box-shadow:0 3px 6px rgba(0,0,0,0.1); transition: all 0.3s ease;"
+       onmouseover="this.style.backgroundColor='#23272b'; this.style.transform='translateY(-2px)';"
+       onmouseout="this.style.backgroundColor='#343a40'; this.style.transform='translateY(0)';">
         Menaxho Userat
     </a>
-</div>
 
-@if (User.IsInRole("Admin"))
-{
-    <li class="nav-item" style="list-style:none; margin-top:15px;">
-        <a class="nav-link" asp-controller="AuditLogs" asp-action="Index"
-           style="color:#dc3545; font-weight:bold;">
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-controller="AuditLogs" asp-action="Index"
+           style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px; text-align:center; background-color:#dc3545; color:white; text-decoration:none; box-shadow:0 3px 6px rgba(0,0,0,0.1); transition: all 0.3s ease;"
+           onmouseover="this.style.backgroundColor='#b71c1c'; this.style.transform='translateY(-2px)';"
+           onmouseout="this.style.backgroundColor='#dc3545'; this.style.transform='translateY(0)';">
             Audit Logs
         </a>
-    </li>
-}
+    }
+</div>

@@ -6,31 +6,88 @@
     ViewData["Title"] = "Lista e Userave";
 }
 
-<h2>Lista e Userave</h2>
+<h2 style="text-align:center; color:#1a1a1a; font-family:'Segoe UI', Tahoma, sans-serif; font-weight:700; margin-bottom:25px;">Lista e Userave</h2>
 
-<p>
-    <a class="btn btn-primary" asp-action="Create">Create New User</a>
+<p style="text-align:center; margin-bottom:30px;">
+    <a asp-action="Create" style="
+        padding:10px 25px;
+        background: linear-gradient(45deg, #4e73df, #1cc88a);
+        color:white;
+        text-decoration:none;
+        border-radius:8px;
+        font-weight:bold;
+        box-shadow:0 4px 6px rgba(0,0,0,0.15);
+        transition: all 0.3s ease;
+        display:inline-block;
+    "
+       onmouseover="this.style.background='linear-gradient(45deg,#1cc88a,#4e73df)'; this.style.transform='translateY(-2px)';"
+       onmouseout="this.style.background='linear-gradient(45deg,#4e73df,#1cc88a)'; this.style.transform='translateY(0)';">
+        Create New User
+    </a>
 </p>
 
-<table class="table table-striped">
-    <thead class="table-dark">
+<table style="width:100%; border-collapse:collapse; font-family:'Segoe UI', Tahoma, sans-serif; box-shadow:0 4px 10px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
+    <thead style="background-color:#2c3e50; color:white; text-transform:uppercase; letter-spacing:0.5px;">
         <tr>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Actions</th>
+            <th style="padding:12px; text-align:left;">Email</th>
+            <th style="padding:12px; text-align:center;">Role</th>
+            <th style="padding:12px; text-align:center;">Actions</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var user in Model)
         {
             var isAdmin = (await UserManager.GetRolesAsync(user)).Contains("Admin");
-            <tr>
-                <td>@user.Email</td>
-                <td>@(isAdmin ? "Admin" : "User")</td>
-                <td>
-                    <a class="btn btn-warning btn-sm" asp-action="Edit" asp-route-id="@user.Id">Edit</a>
-                    <a class="btn btn-danger btn-sm" asp-action="Delete" asp-route-id="@user.Id">Delete</a>
-                    <a class="btn btn-secondary btn-sm" asp-action="ResetPassword" asp-route-id="@user.Id">Reset Password</a>
+            <tr style="background-color:#ffffff; transition: all 0.3s ease;"
+                onmouseover="this.style.backgroundColor='#f1f3f6'; this.style.transform='scale(1.02)';"
+                onmouseout="this.style.backgroundColor='#ffffff'; this.style.transform='scale(1)';">
+                <td style="padding:12px; text-align:left; color:#2c3e50; font-weight:600;">@user.Email</td>
+                <td style="padding:12px; text-align:center; color:#16a085; font-weight:600;">@(isAdmin ? "Admin" : "User")</td>
+                <td style="padding:12px; text-align:center;">
+                    <a asp-action="Edit" asp-route-id="@user.Id" style="
+                            padding:5px 12px;
+                            background-color:#f39c12;
+                            color:white;
+                            text-decoration:none;
+                            border-radius:6px;
+                            font-weight:bold;
+                            margin-right:5px;
+                            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+                            transition: all 0.3s ease;
+                        "
+                       onmouseover="this.style.backgroundColor='#e67e22'; this.style.transform='translateY(-2px)';"
+                       onmouseout="this.style.backgroundColor='#f39c12'; this.style.transform='translateY(0)';">
+                        Edit
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@user.Id" style="
+                            padding:5px 12px;
+                            background-color:#e74c3c;
+                            color:white;
+                            text-decoration:none;
+                            border-radius:6px;
+                            font-weight:bold;
+                            margin-right:5px;
+                            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+                            transition: all 0.3s ease;
+                        "
+                       onmouseover="this.style.backgroundColor='#c0392b'; this.style.transform='translateY(-2px)';"
+                       onmouseout="this.style.backgroundColor='#e74c3c'; this.style.transform='translateY(0)';">
+                        Delete
+                    </a>
+                    <a asp-action="ResetPassword" asp-route-id="@user.Id" style="
+                            padding:5px 12px;
+                            background-color:#95a5a6;
+                            color:white;
+                            text-decoration:none;
+                            border-radius:6px;
+                            font-weight:bold;
+                            box-shadow:0 2px 4px rgba(0,0,0,0.1);
+                            transition: all 0.3s ease;
+                        "
+                       onmouseover="this.style.backgroundColor='#7f8c8d'; this.style.transform='translateY(-2px)';"
+                       onmouseout="this.style.backgroundColor='#95a5a6'; this.style.transform='translateY(0)';">
+                        Reset Password
+                    </a>
                 </td>
             </tr>
         }
