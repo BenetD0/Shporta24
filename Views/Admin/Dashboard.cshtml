@@ -2,34 +2,53 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1>Admin Dashboard</h1>
-
-<hr />
-
-<div class="row">
-    <div class="col-md-4">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Products</h5>
-                <p class="card-text fs-3">@ViewBag.TotalProducts</p>
-            </div>
+<div class="container mt-5 dashboard-wrapper">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-5 dashboard-header">
+        <div>
+            <h2 class="dashboard-title">Admin Dashboard</h2>
+            <p class="dashboard-subtitle">System overview & statistics</p>
         </div>
+        <span class="dashboard-badge">Enterprise Panel</span>
     </div>
 
-    <div class="col-md-4">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Categories</h5>
-                <p class="card-text fs-3">@ViewBag.TotalCategories</p>
+    <div class="row g-4">
+        <!-- Products -->
+        <div class="col-md-4">
+            <div class="dashboard-card gradient-blue">
+                <div class="card-body">
+                    <div>
+                        <h6>Products</h6>
+                        <h2>@ViewBag.TotalProducts</h2>
+                    </div>
+                    <i class="bi bi-box-seam"></i>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-4">
-        <div class="card text-white bg-dark mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Users</h5>
-                <p class="card-text fs-3">@ViewBag.TotalUsers</p>
+        <!-- Categories -->
+        <div class="col-md-4">
+            <div class="dashboard-card gradient-green">
+                <div class="card-body">
+                    <div>
+                        <h6>Categories</h6>
+                        <h2>@ViewBag.TotalCategories</h2>
+                    </div>
+                    <i class="bi bi-tags"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users -->
+        <div class="col-md-4">
+            <div class="dashboard-card gradient-dark">
+                <div class="card-body">
+                    <div>
+                        <h6>Users</h6>
+                        <h2>@ViewBag.TotalUsers</h2>
+                    </div>
+                    <i class="bi bi-people"></i>
+                </div>
             </div>
         </div>
     </div>

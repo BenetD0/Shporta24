@@ -2,56 +2,63 @@
     ViewData["Title"] = "Admin Dashboard";
 }
 
-<h1 class="mb-4">Admin Dashboard</h1>
+<h1 style="text-align:center; color:#0d6efd; margin-bottom:30px;">Admin Dashboard</h1>
 
-<div class="row">
-    <div class="col-md-4">
-        <div class="card text-bg-primary mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Produkte</h5>
-                <p class="card-text fs-3">@ViewBag.TotalProducts</p>
+<div class="row" style="display:flex; justify-content:center; flex-wrap:wrap; gap:20px;">
+    <!-- Karte Produkte -->
+    <div class="col-md-4" style="flex:1 1 250px; max-width:300px;">
+        <div class="card text-bg-primary mb-3" style="border-radius:15px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+            <div class="card-body" style="text-align:center;">
+                <h5 class="card-title" style="font-weight:bold;">Produkte</h5>
+                <p class="card-text fs-3" style="margin:0; color:#000;">@ViewBag.TotalProducts</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card text-bg-success mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Kategori</h5>
-                <p class="card-text fs-3">@ViewBag.TotalCategories</p>
+    <!-- Karte Kategori -->
+    <div class="col-md-4" style="flex:1 1 250px; max-width:300px;">
+        <div class="card text-bg-success mb-3" style="border-radius:15px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+            <div class="card-body" style="text-align:center;">
+                <h5 class="card-title" style="font-weight:bold;">Kategori</h5>
+                <p class="card-text fs-3" style="margin:0; color:#000;">@ViewBag.TotalCategories</p>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
-        <div class="card text-bg-dark mb-3">
-            <div class="card-body">
-                <h5 class="card-title">Users</h5>
-                <p class="card-text fs-3">@ViewBag.TotalUsers</p>
+    <!-- Karte Users -->
+    <div class="col-md-4" style="flex:1 1 250px; max-width:300px;">
+        <div class="card text-bg-dark mb-3" style="border-radius:15px; box-shadow:0 4px 8px rgba(0,0,0,0.2);">
+            <div class="card-body" style="text-align:center;">
+                <h5 class="card-title" style="font-weight:bold;">Users</h5>
+                <p class="card-text fs-3" style="margin:0; color:#000;">@ViewBag.TotalUsers</p>
             </div>
         </div>
     </div>
 </div>
 
-<hr />
+<hr style="border-top:2px solid #0d6efd; margin:40px 0;" />
 
-<div class="mt-3">
-    <a asp-controller="Products" asp-action="Index" class="btn btn-outline-primary">
+<!-- Butonat në një rresht -->
+<div style="display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-bottom:30px;">
+    <a asp-controller="Products" asp-action="Index"
+       class="btn btn-outline-primary"
+       style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px;">
         Menaxho Produkte
+    </a>
+
+    <a asp-controller="AdminUsers" asp-action="Index"
+       class="btn btn-outline-dark"
+       style="padding:10px 25px; border-radius:10px; font-weight:bold; min-width:150px;">
+        Menaxho Userat
     </a>
 </div>
 
-<a asp-controller="AdminUsers" asp-action="Index"
-   class="btn btn-outline-dark mt-3">
-    Menaxho Userat
-</a>
-
 @if (User.IsInRole("Admin"))
 {
-    <li class="nav-item">
-        <a class="nav-link" asp-controller="AuditLogs" asp-action="Index">
+    <li class="nav-item" style="list-style:none; margin-top:15px;">
+        <a class="nav-link" asp-controller="AuditLogs" asp-action="Index"
+           style="color:#dc3545; font-weight:bold;">
             Audit Logs
         </a>
     </li>
 }
-
