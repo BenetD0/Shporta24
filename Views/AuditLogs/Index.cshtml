@@ -2,27 +2,44 @@
 
 @{
     ViewData["Title"] = "Audit Logs";
+    Layout = "_LayoutAdmin";
 }
 
-<h1>Audit Logs</h1>
+<h1 style="text-align:center; color:#1a1a1a; font-family:'Segoe UI', Tahoma, sans-serif; font-weight:700; margin-bottom:25px;">
+    Audit Logs
+</h1>
 
-<table class="table table-striped">
-    <thead>
+<table style="width:100%; border-collapse:collapse; font-family:'Segoe UI', Tahoma, sans-serif; box-shadow:0 4px 10px rgba(0,0,0,0.05); border-radius:10px; overflow:hidden;">
+    <thead style="background-color:#2c3e50; color:white; text-transform:uppercase; letter-spacing:0.5px;">
         <tr>
-            <th>ID</th>
-            <th>Action</th>
-            <th>Performed By</th>
-            <th>Created At</th>
+            <th style="padding:12px; text-align:center;">ID</th>
+            <th style="padding:12px; text-align:left;">Action</th>
+            <th style="padding:12px; text-align:left;">Performed By</th>
+            <th style="padding:12px; text-align:center;">Created At</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var log in Model)
         {
-            <tr>
-                <td>@log.Id</td>
-                <td>@log.Action</td>
-                <td>@log.PerformedBy</td>
-                <td>@log.CreatedAt.ToString("g")</td>
+            <tr style="background-color:#ffffff; transition: all 0.3s ease;"
+                onmouseover="this.style.backgroundColor='#f1f3f6'; this.style.transform='scale(1.02)';"
+                onmouseout="this.style.backgroundColor='#ffffff'; this.style.transform='scale(1)';">
+
+                <td style="padding:12px; text-align:center; font-weight:600; color:#2c3e50;">
+                    @log.Id
+                </td>
+
+                <td style="padding:12px; text-align:left; color:#34495e; font-weight:600;">
+                    @log.Action
+                </td>
+
+                <td style="padding:12px; text-align:left; color:#7f8c8d;">
+                    @log.PerformedBy
+                </td>
+
+                <td style="padding:12px; text-align:center; color:#16a085; font-weight:600;">
+                    @log.CreatedAt.ToString("g")
+                </td>
             </tr>
         }
     </tbody>
